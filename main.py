@@ -2,11 +2,13 @@ import numpy as np
 
 k = 1
 def simplex(B, N, CN, CB, b, k):
+    print("--------------ENTER---------------")
     print("k = ", k)
     B_inv = np.linalg.inv(B)
     print("Base = \n", B)
     print("N = \n", N)
     print("CN = ", CN)
+    print("CB = ", CB)
     b_barre = B_inv.dot(b)
 
     print("B_barre = \n", b_barre)
@@ -47,6 +49,9 @@ def simplex(B, N, CN, CB, b, k):
             print("Min xs indice = ",min_xs(xs_tab)["indice"])
 
             #at_cols = at_col(B, indice_min)
+            print("------------- AS --------------------")
+            print("As = ", np.array(As))
+            print("-------------------------------------")
             new_bases = new_base(B, As, indice_min)
             new_Ns = new_N(B, N, indice_min, s)
             new_cn = new_CN(CN, CB, s, indice_min)
@@ -65,22 +70,21 @@ def check_cn(A):
     resp = True
     i_line = 0
     i_col = 0
-    elem = 0
-    elem_max = A[0][0]
+    elem_min = 100000
     for i_line,line in enumerate(A):
         for i_elem,elem in enumerate(line):
             if elem < 0 :
                 i_line = i_line
-                i_col = i_elem
-                elem = elem
+                #i_col = i_elem
                 resp = False
-                if elem < elem_max:
-                    elem_max = elem
+                if elem < elem_min:
+                    elem_min = elem
+                    i_col = i_elem
                 
     negative_element = {
         "i_line": i_line,
         "i_col": i_col,
-        "elem":elem_max,
+        "elem":elem_min,
         "is_pos": resp
     }
     return negative_element
@@ -128,14 +132,18 @@ def at_col(M,indice):
 
 def new_base(B, As, i):
     As_col = np.array(As)
+    #print("As in function = ", As_col)
     B_d = np.delete(B, i, axis=1)
     B_a = np.insert(B_d, i, As_col, axis=1)
+    #print("i in function = ", i)
+    #print("B_d in function = \n", B_d)
+    #print("B_a in function = \n", B_a)
     return B_a
     
 def new_N(B, N, i, ind):
     At_col = np.array(at_col(B,i)) 
     N_d = np.delete(N, ind, axis=1)
-    N_a = np.insert(N_d, 1, At_col, axis=1)
+    N_a = np.insert(N_d, ind, At_col, axis=1)
     return N_a
     
 def new_CN(cn, cb, s_cn, ind_cb):
@@ -149,12 +157,60 @@ def new_CB(cn, cb, s_cn, ind_cb):
     return cb_a
 
 
-B = np.array([[1,0,0],[0,1,0],[0,0,1]])
-N = np.array([[-3,2],[-1,2],[1,1]])
-CB = np.array([[0,0,0]])
-CN = np.array([[-1,-2]])
+# B = np.array([[1.0,0.0,0.0],[0.0,1.0,0.0],[0.0,0.0,1.0]])
+# N = np.array([[-3.0,2.0],[-1.0,2.0],[1.0,1.0]])
+# CB = np.array([[0.0,0.0,0.0]])
+# CN = np.array([[-1.0,-2.0]])
+# b = np.array([[2],[4],[5]])
 
-b = np.array([[2],[4],[5]])
+# B = np.array([[1.0,0.0,0.0,0.0],[0.0,1.0,0.0,0.0],[0.0,0.0,-1.0,0.0],[0.0,0.0,0.0,-1.0]])
+# N = np.array([[1.0, 1.0],[-1.0, 4.0], [1.0, 0.0],[0.0, 1.0]])
+# CB = np.array([[0.0,0.0,0.0,0.0]])
+# CN = np.array([[-3.0, -4.0]])
+# b = np.array([[20],[20],[10],[5]])
+
+# B = np.array([[1.0,0.0],[0.0,1.0]])
+# N = np.array([[2.0, 4.0],[3.0, 1.0]])
+# CB = np.array([[0.0, 0.0]])
+# CN = np.array([[-6,-2]])
+# b = np.array([[9],[6]])
+
+# B = np.array([[-1.0,0.0],[0.0,1.0]])
+# N = np.array([[1.0, 1.0],[3.0, 5.0]])
+# CB = np.array([[0.0, 0.0]])
+# CN = np.array([[-2,-3]])
+# b = np.array([[10],[15]])
+
+# B = np.array([[-1.0,0.0],[0.0,1.0]])
+# N = np.array([[1.0, -1.0],[0.0, 1.0]])
+# CB = np.array([[0.0, 0.0]])
+# CN = np.array([[1,1]])
+# b = np.array([[1],[2]])
+
+# B = np.array([[1.0,0.0,0.0],[0.0,1.0,0.0],[0.0,0.0,1.0]])
+# N = np.array([[0.5, 0.25],[0.4, 0.3],[0.2, 0.4]])
+# CB = np.array([[0.0, 0.0,0.0]])
+# CN = np.array([[-5,-3]])
+# b = np.array([[40],[36],[36]])
+
+# B = np.array([[1.0,0.0],[0.0,1.0]])
+# N = np.array([[3.0, 4.0,1.0],[1.0, 3.0, 2.0]])
+# CB = np.array([[0.0,0.0]])
+# CN = np.array([[-3,-6, -2]])
+# b = np.array([[2],[1]])
+
+B = np.array([[1.0,0.0],[0.0,1.0],[0.0,0.0]])
+N = np.array([[-2.0, 2.0,0.0, -1.0],[5.0, 4.0, -3.0, -1.0],[1.0,1.0,1.0,0.0]])
+CB = np.array([[0.0, 0.0]])
+CN = np.array([[-1.0, 0.0,0.0,0.0]])
+b = np.array([[0],[0],[1]])
+
+# B = np.array([[1.0,0.0,0.0],[0.0,1.0,0.0],[0.0,0.0,1.0]])
+# N = np.array([[3.0, 2.0],[2.0, 1.0],[4.0, 6.0]])
+# CB = np.array([[0.0, 0.0, 0.0]])
+# CN = np.array([[-3,-5]])
+# b = np.array([[40],[30],[38]])
+
 
 simplex_sol = simplex(B, N, CN, CB, b, k)
 print("simplex = ", simplex_sol)
