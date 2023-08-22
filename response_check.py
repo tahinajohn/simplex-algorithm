@@ -35,6 +35,17 @@ def solution_print(phr, resp):
     for variable, resp in zip(v, f):
         phr = phr.replace(variable, str(resp))
     
-    sol = " > ",phr,"= ",eval(phr)
-    return sol
+    #sol = phr,"= ",eval(phr)
+    sol = f"Solution : z : {phr} = {eval(phr)}"
+
+    tab_rep = []
+    #for variable, resp in zip(v, f):
+    for i in range(len(variable)):
+        new_elem = f"{v[i]} = {f[i]}"
+        tab_rep.append(new_elem)
+        #tab_rep = str(variable, " = ", resp, "\n")
+    
+    tab_response = "\n".join([f"{element}" for element in tab_rep])
+
+    return tab_response, sol
 
