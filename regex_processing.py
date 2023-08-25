@@ -10,6 +10,7 @@ from simplex_calculation import simplex_calculation
 
 def target_split(target_funct, is_max):
     coeff_regex = r'([+-]?\d+)\s*\*?\s*([a-zA-Z0-9]+)\s*'
+    #coeff_regex = r'([+-]?\d+)\*x\d+'
     signe_regex = r'([<>]=?|==)\s*([+-]?\d+)'
     target_catcher = re.findall(coeff_regex, target_funct)
     if is_max:
@@ -17,6 +18,9 @@ def target_split(target_funct, is_max):
     else:
         target_coeff = [int(match[0]) for match in target_catcher]
         
+    print("************TARGET SPLIT*********************")
+    print(target_coeff)
+    print("*********************************************")
     return target_coeff
 
 def variables(target_funct):
@@ -27,8 +31,16 @@ def variables(target_funct):
 
 #f = final_response(v, s)
 def constraint_split(constraints):
+    print("-------------------CONSTRAINTS----------------")
+    print(constraints)
+    print("----------------------------------------")
     constraint_one_by_one = constraints.split('\n')
-    coeff_regex = r'([+-]?\d+)\s*\*?\s*([a-zA-Z0-9]+)\s*'
+    print("-------------------CONSTRAINTS--ONE-BY ONE-------------")
+    print(constraint_one_by_one)
+    print("----------------------------------------")
+    #coeff_regex = r'([+-]?\d+)\s*\*?\s*([a-zA-Z0-9]+)\s*'
+    #coeff_regex = r'([+-]?\d+)\*x\d+'
+    coeff_regex = r'([+-]?\d+\.*\d*)\*x\d+'
     signe_regex = r'([<>]=?|==)\s*([+-]?\d+)'
     coeff_tab = []
     variables_tab = []
@@ -38,16 +50,23 @@ def constraint_split(constraints):
     for constraint in constraint_one_by_one:
         coeff_catcher = re.findall(coeff_regex, constraint)
         signe_catcher = re.findall(signe_regex, constraint)
-        coefficients = [int(match[0]) for match in coeff_catcher]
-        variables = [match[1] for match in coeff_catcher]
+        coefficients = [float(match) for match in coeff_catcher]
+        print("---------------COEFF---------------------")
+        print(coefficients)
+        print("-----------------------------------------")
+        #variables = [match[1] for match in coeff_catcher]
         coeff_tab.append(coefficients)
-        variables_tab.append(variables)
+        #variables_tab.append(variables)
         signe = [match[0] for match in signe_catcher]
         #signe = signe_catcher[0]
 
         constant = [int(match[1]) for match in signe_catcher]
         signe_tab.append(signe)
         const_tab.append(constant)
+
+    print("--------------------COEFF TAB-----------------------------")
+    print(coeff_tab)
+    print("----------------------------------------------------------")
         
     output = {
         "coefficients": coeff_tab,
@@ -60,6 +79,7 @@ def constraint_split(constraints):
 
 
 def sign_number(constraints):
+    print("------CONSTRAINT ST FORM IN SIGN NUMBER---------------------")
     constraint = constraint_split(constraints)
     nbr_sign = count_sign(constraint["signes"])
     
@@ -79,14 +99,16 @@ def count_sign(tab):
     return cpt
 
 def target_standard_form(target_funct, constraint, is_max):
+    print("---------------TARGET STANDARD FROM------------")
     nbr = sign_number(constraint)
     target = target_split(target_funct, is_max)
     target += [0] * nbr
-    
+    print("TARGET ", target)
     return target
 
 
 def constraint_standard_form(constraints):
+    print("---------CONSTRAINT STANDARD FORM IN CONSTRAINT ST F---------------")
     constraint = constraint_split(constraints)
     A = np.array(constraint["coefficients"])
     constantes = constraint["constantes"]
@@ -108,6 +130,9 @@ def constraint_standard_form(constraints):
             nbr_sign -= 1
         print(new_arr[i])
 
+    print("ENter Constraint STANDARD FORM")
+    print("Matri standard form = ", new_arr)
+
     resp = {
         "matrix": new_arr,
         "constantes":constantes
@@ -124,6 +149,9 @@ def split_matrix(target, constraints_M, is_max):
     nbr_split = M.shape[0]
     
     base, hors_base = np.split(M, [nbr_split], axis=1)
+    print("Base split mat = ", base)
+    print("Hors Base split mat = ", hors_base)
+
     cb, cn = np.split(t, [nbr_split])  
     
     cb = np.array([cb])
@@ -139,8 +167,15 @@ def split_matrix(target, constraints_M, is_max):
     
     return base, hors_base, cb, cn, c_const
 
-
 def simplex_response(target, constraints, is_max):
-    b, hb, cb, cn, c = split_matrix(target, constraints, is_max)
-    return simplex_calculation(b, hb, cb, cn, c,1)
+    az = 1
+    print("ENTER NEW SIMPLEX z =", is_max)
 
+    b, hb, cb, cn, c = split_matrix(target, constraints, is_max)
+    print("ENTER NEW BAse = ", b)
+    print("ENTER NEW HorsBAse = ", hb)
+    print("ENTER NEW CB = ", cb)
+    print("ENTER NEW CN = ", cn)
+    print("ENTER NEW CONST = ", c)
+    az = az + 1
+    return simplex_calculation(b, hb, cb, cn, c,1)
