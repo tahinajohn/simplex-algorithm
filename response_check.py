@@ -14,19 +14,21 @@ def check_constraints(c_s,v, resp):
     return c_s
 
 def is_constraint_true(c_s, target, resp):
-    v = variables(target)
-
-    f = final_response(v, resp)
-    check_c = check_constraints(c_s, v, f)
-    tab_split = check_c.split("\n")
-    print("tab_split = ", tab_split)
-    check = True
-    for c in tab_split:
-        if not eval(c):
-            check = False
-            break
-    
-    return check
+    if resp == "No solution":
+        return False
+    else:
+        v = variables(target)
+        f = final_response(v, resp)
+        check_c = check_constraints(c_s, v, f)
+        tab_split = check_c.split("\n")
+        print("tab_split = ", tab_split)
+        check = True
+        for c in tab_split:
+            if not eval(c):
+                check = False
+                break
+        
+        return check
 
 def final_response(v, s):
     if len(v) > len(s):
@@ -38,7 +40,11 @@ def final_response(v, s):
         response_tab.append(s[i][0])
     return response_tab
 
-def solution_print(phr, resp):
+def solution_print(phr, resp, isMax):
+    if isMax:
+        m = "Maximum"
+    else:
+        m = "Minimum"
     v = variables(phr)
     f = final_response(v, resp)
     if len(v) > len(resp):
@@ -60,5 +66,5 @@ def solution_print(phr, resp):
     
     tab_response = "\n".join([f"{element}" for element in tab_rep])
 
-    return tab_response, sol
+    return m, tab_response, sol
 

@@ -34,10 +34,10 @@ class MyGUI(QMainWindow):
         
     def check_constraint(self, resp):
         if is_constraint_true(self.simple_constraint.toPlainText(), self.obj_function.text(), resp):
-            var_res, res = solution_print(self.obj_function.text(), resp)
-            return var_res, res
+            m, var_res, res = solution_print(self.obj_function.text(), resp, self.max.isChecked())
+            return m, var_res, res
         else:
-            return "","non solution"
+            return "","No solution"
 
     def calcul_simplex(self):
         print("objective funct = ", self.obj_function.text())
@@ -45,8 +45,9 @@ class MyGUI(QMainWindow):
         print("constraint simple = ", self.simple_constraint.toPlainText())
         print("check bouton = ", self.max.isChecked())
         resp = simplex_response(self.obj_function.text(), self.constraints_data.toPlainText(), self.max.isChecked())
-        var_resp, final_resp = self.check_constraint(resp)
-        self.response.setPlainText(str(var_resp))
+        m, var_resp, final_resp = self.check_constraint(resp)
+        self.response.setPlainText(str(m))
+        self.response.append(str(var_resp))
         self.response.append(str(final_resp))
 
     def reset_data(self):

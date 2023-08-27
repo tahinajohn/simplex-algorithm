@@ -94,6 +94,15 @@ def add_zero(M, nbr_col):
 def count_sign(tab):
     cpt=0
     for sign in tab:
+        print("**********************")
+        print("**********************")
+        print("**********************")
+
+        print("Signe[0] : ", sign[0])
+        print("**********************")
+        print("**********************")
+        print("**********************")
+
         if sign[0] == '<=' or sign[0] == '>=' or sign[0] == '>' or sign[0] == '<':
             cpt = cpt + 1
     return cpt
